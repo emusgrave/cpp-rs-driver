@@ -53,9 +53,10 @@ list(APPEND INCLUDE_DIRS
   third_party/minizip
   third_party/mt19937_64
   third_party/rapidjson/rapidjson
-  third_party/sparsehash/src)
+  third_party/sparsehash/src
+  ${CMAKE_CURRENT_BINARY_DIR}/third_party/sparsehash/src)
 
-list(APPEND INCLUDE_DIRS ${CASS_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+list(APPEND INCLUDE_DIRS ${CASS_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 #------------------------------
 # Compiler flags
@@ -119,8 +120,9 @@ set(HAVE_BOOST_ATOMIC ${CASS_USE_BOOST_ATOMIC})
 set(HAVE_STD_ATOMIC ${CASS_USE_STD_ATOMIC})
 set(HAVE_OPENSSL ${CASS_USE_OPENSSL})
 
-# Generate the driver_config.hpp file
+# Generate the driver_config.hpp file into the build directory
+# (avoids dirtying the source tree in submodule checkouts)
 configure_file(
-  ${CASS_ROOT_DIR}/driver_config.hpp.in 
-  ${CMAKE_CURRENT_SOURCE_DIR}/driver_config.hpp)
+  ${CASS_ROOT_DIR}/driver_config.hpp.in
+  ${CMAKE_CURRENT_BINARY_DIR}/driver_config.hpp)
 

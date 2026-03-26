@@ -106,7 +106,9 @@ check_type_size("uint16_t" UINT16_T)
 check_type_size("u_int16_t" U_INT16_T)
 check_type_size("__uint16_t" __UINT16_T)
 
-configure_file("config.h.cmake" "${CMAKE_CURRENT_SOURCE_DIR}/src/sparsehash/internal/sparseconfig.h")
+# Generate into the build directory to avoid dirtying the source tree
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/src/sparsehash/internal")
+configure_file("config.h.cmake" "${CMAKE_CURRENT_BINARY_DIR}/src/sparsehash/internal/sparseconfig.h")
 
 file(GLOB SPARSEHASH_HEADER_FILES sparsehash)
 file(GLOB SPARSEHASH_INTERNAL_HEADER_FILES sparsehash/*.h sparsehash/internal/*.h)
