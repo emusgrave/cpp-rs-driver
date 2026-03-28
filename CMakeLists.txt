@@ -11,7 +11,21 @@ list(APPEND CMAKE_MODULE_PATH ${CASS_ROOT_DIR}/cmake)
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-enable_language(Rust)
+# Do not use enable_language(Rust). CMake's built-in experimental Rust language
+# support (added in CMake 3.29+) intercepts that call before CMAKE_MODULE_PATH
+# is consulted and requires a version-specific opt-in UUID. The VS generator on
+# Windows silently ignores enable_language() in subdirectories, which is why it
+# works there. CMakeCargo invokes cargo directly and never needs CMake's Rust
+# language infrastructure, so we just locate the toolchain ourselves.
+find_package(Rust REQUIRED)
+if(RUST_FOUND)
+    set(CMAKE_Rust_COMPILER "${RUSTC_EXECUTABLE}")
+    set(CMAKE_Rust_COMPILER_ID "Rust")
+    set(CMAKE_Rust_COMPILER_VERSION "${RUSTC_VERSION}")
+    set(CMAKE_Rust_COMPILER_LOADED 1)
+endif()
+message(STATUS "Cargo Home: ${CARGO_HOME}")
+message(STATUS "Rust Compiler Version: ${RUSTC_VERSION}")
 include(CMakeCargo)
 
 #---------------
